@@ -1,6 +1,6 @@
 library(raster)
 library(icosa)
-library(tmaptools)
+#library(tmaptools)
 library(geosphere)
 library(rgdal)
 library(sf)
@@ -18,8 +18,8 @@ writeRaster(mask, "../Supp/mask.tif")
 40075017/360
 40075017/360/6
 p<-c(0, 0)
-p_north<-c(0.166667, 0)
-p_south<-c(-0.166667, 0)
+p_north<-c(1, 0)
+p_south<-c(-1, 0)
 distHaversine(p, p_north, r=6378137)
 distHaversine(p, p_south, r=6378137)
 
@@ -28,8 +28,8 @@ distHaversine(p, p_south, r=6378137)
 #55°30′34″N 12°34′08″E 10 Minutes South to Copenhagen: 55.509444, 12.568889
 
 p_Copenhagen<-c(55.676111, 12.568889)
-p_north_Copenhagen<-c(55.842778, 12.568889)
-p_south_Copenhagen<-c(55.509444, 12.568889)
+p_north_Copenhagen<-c(56.676111, 12.568889)
+p_south_Copenhagen<-c(54.676111, 12.568889)
 distHaversine(p_Copenhagen, p_north_Copenhagen, r=6378137)
 distHaversine(p_Copenhagen, p_south_Copenhagen, r=6378137)
 
@@ -37,8 +37,8 @@ distHaversine(p_Copenhagen, p_south_Copenhagen, r=6378137)
 #37°46′00″N 14°00′55″E 10 Minutes North to Sicilia: 37.766667, 14.015278
 #37°26′00″N 14°00′55″E 10 Minutes South to Sicilia: 37.433333, 14.015278
 p_Sicilia<-c(37.6, 14.015278)
-p_north_Sicilia<-c(37.766667, 14.015278)
-p_south_Sicilia<-c(37.433333, 14.015278)
+p_north_Sicilia<-c(38.6, 14.015278)
+p_south_Sicilia<-c(36.6, 14.015278)
 distHaversine(p_Sicilia, p_north_Sicilia, r=6378137)
 distHaversine(p_Sicilia, p_south_Sicilia, r=6378137)
 
@@ -79,6 +79,7 @@ plot3d(hLow, guides=F)
 
 continents<-st_read("../Supp/continents/continent.shp")
 st_crs(continents)<-st_crs(bio1)
+plot(st_geometry(continents))
 European<-continents[which(continents$CONTINENT=="Europe"),]
 plot(st_geometry(European))
 st_write(European, "../Supp/continents/European.shp")
@@ -87,10 +88,14 @@ plot(st_geometry(European_simp))
 
 European_simp<-st_simplify(European, dTolerance=1)
 plot(st_geometry(European_simp))
-st_write(European_simp, "../Supp/continents/European_dT1.shp")
+st_write(European_simp, 
+         "../Supp/continents/European_dT1.shp",
+         delete_dsn=T)
 European_simp<-st_simplify(European, dTolerance=0.5)
 plot(st_geometry(European_simp))
-st_write(European_simp, "../Supp/continents/European_dT0.5.shp")
+st_write(European_simp, 
+         "../Supp/continents/European_dT0.5.shp",
+         delete_dsn=T)
 
 continents_gcb<-st_transform(continents, crs=st_crs(aeqd_proj_gcb))
 plot(st_geometry(continents_gcb))
@@ -105,7 +110,7 @@ bio1_gcb_crop<-crop(bio1_gcb, extent(European_gcb_simp))
 plot(bio1_gcb_crop)
 bio1_gcb_mask<-mask(bio1_gcb_crop, European_gcb_simp)
 plot(bio1_gcb_mask)
-
+writeRaster(bio1_gcb_mask, "../Supp/bio1_european.tif")
 for (i in c(1:19)){
   print(i)
   r<-raster(sprintf("../Supp/bioclim/10minus/bio%d.asc", i))
