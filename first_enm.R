@@ -1,8 +1,9 @@
 library(dismo)
+#biomod2
 #read the data from the CSV files
 occ<-read.csv("Data/occ.csv", stringsAsFactors = F)
 #Load the environmental variables
-env_vars<-list.files("../Supp/bioclim/1degree", pattern="\\.tif", full.names=T)
+env_vars<-list.files("../Supp/bioclim/10minus", pattern="\\.asc", full.names=T)
 predictors<-stack(env_vars)
 maxent_model<-maxent(predictors, occ[, 2:3])
 
@@ -14,6 +15,9 @@ response(maxent_model)
 
 # predict to entire dataset
 r <- predict(maxent_model, predictors) 
+plot(r)
+points(occ$x, occ$y, pch=".")
+writeRaster(r, "name.tif")
 
 # with some options:
 # r <- predict(me, predictors, args=c("outputformat=raw"), progress='text', 

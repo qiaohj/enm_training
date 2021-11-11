@@ -6,8 +6,8 @@ library(rgdal)
 library(sf)
 
 #create a mask with random numbers
-mask<-raster("../Supp/bioclim/bio1.asc")
-values(mask)[!is.na(values(mask))]<-c(1:length(values(mask)[!is.na(values(mask))]))
+mask<-raster("../Supp/bioclim/10minus/bio1.asc")
+raster::values(mask)[!is.na(raster::values(mask))]<-c(1:length(raster::values(mask)[!is.na(raster::values(mask))]))
 plot(mask)
 writeRaster(mask, "../Supp/mask.tif")
 
