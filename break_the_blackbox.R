@@ -23,9 +23,9 @@ threshold<-0.5
 
 TP<-nrow(occ_unique_cell[which(occ_unique_cell$predicted_value
                                >=threshold),])
-FP<-nrow(occ_unique_cell[which(occ_unique_cell$predicted_value
+FN<-nrow(occ_unique_cell[which(occ_unique_cell$predicted_value
                                <threshold),])
-FN<-nrow(bg[which(bg$predicted_value>=threshold),])
+FP<-nrow(bg[which(bg$predicted_value>=threshold),])
 TN<-nrow(bg[which(bg$predicted_value<threshold),])
 
 sensitivity<-TP/(TP+FN)
