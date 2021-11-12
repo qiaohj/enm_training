@@ -31,7 +31,7 @@ maxent_model<-maxent(predictors, occ[, 2:3], removeDuplicates=T, a=bg,
                      "quadratic=TRUE",
                      "hinge=TRUE",
                      "doclamp=TRUE",
-                     "betamultiplier=2"))
+                     "betamultiplier=1"))
 saveRDS(bg, "../Supp/maxent/example_bg.rda")
 saveRDS(maxent_model, "../Supp/maxent/example_maxent_model.rda")
 
