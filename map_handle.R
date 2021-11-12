@@ -111,6 +111,31 @@ st_crs(continents)<-st_crs(bio1)
 plot(st_geometry(continents))
 European<-continents[which(continents$CONTINENT=="Europe"),]
 plot(st_geometry(European))
+
+European_raster<-crop(bio1, European)
+plot(European_raster, add=T)
+
+European_raster_mask<-mask(European_raster, European)
+plot(European_raster_mask)
+
+European_raster_mask2<-mask(bio1, European)
+plot(European_raster_mask2)
+
+European_raster_gcb<-crop(bio1_gcb, European)
+plot(European_raster_gcb)
+
+European_gcb<-st_transform(European, crs=st_crs(aeqd_proj_gcb))
+European_raster_gcb2<-crop(bio1_gcb, European_gcb)
+plot(European_raster_gcb2)
+
+European_raster_gcb2<-mask(European_raster_gcb2, European_gcb)
+plot(European_raster_gcb2)
+
+
+European_raster_mask<-mask(European_raster, European)
+plot(European_raster_mask)
+
+
 st_write(European, "../Supp/continents/European.shp")
 European_simp<-st_simplify(European)
 plot(st_geometry(European_simp))

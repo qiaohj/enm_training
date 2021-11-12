@@ -34,10 +34,17 @@ points(occ$x, occ$y)
 European_simp<-st_read("../Supp/continents/European_dT1.shp")
 European<-st_read("../Supp/continents/European.shp")
 longlat_proj<-"+proj=longlat +datum=WGS84 +no_defs"
-points<-st_as_sf(x = occ[, 2:3], coords=c("x", "y"), crs=st_crs(longlat_proj))
+
+plot(occ$x, occ$y)
+
+points<-st_as_sf(x = occ[, 2:3], coords=c("x", "y"), 
+                 crs=st_crs(longlat_proj))
+plot(st_geometry(points))
+
 european_points<-points[st_contains(European, points)[[1]],]
 none_european_points<-points[-st_contains(European, points)[[1]],]
 plot(st_geometry(european_points), add=T, col="red")
+plot(st_geometry(none_european_points), add=T, col="blue")
 
 plot(st_geometry(European))
 plot(st_geometry(european_points), add=T, col="red")
