@@ -5,7 +5,8 @@ occ<-read.csv("Data/occ.csv", stringsAsFactors = F)
 #Load the environmental variables
 env_vars<-list.files("../Supp/bioclim/10minus", pattern="\\.asc", full.names=T)
 predictors<-stack(env_vars)
-maxent_model<-maxent(predictors, occ[, 2:3])
+bg<-randomPoints(predictors, 1000)
+maxent_model<-maxent(predictors, occ[, 2:3], a=bg)
 
 # plot showing importance of each variable
 plot(maxent_model)
@@ -14,7 +15,8 @@ plot(maxent_model)
 response(maxent_model)
 
 # predict to entire dataset
-r <- predict(maxent_model, predictors) 
+
+r <- predict(maxent_model, predictors)
 plot(r)
 points(occ$x, occ$y, pch=".")
 writeRaster(r, "name.tif")

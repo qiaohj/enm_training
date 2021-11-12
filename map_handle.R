@@ -56,21 +56,50 @@ get_proj4("EPSG:3035", output="character")
 
 longlat_proj<-"+proj=longlat +datum=WGS84 +no_defs"
 aeqd_proj<-"+proj=aeqd +datum=WGS84 +no_defs"
-aeqd_proj_gcb<-"+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs"
+aeqd_proj_gcb<-"+proj=laea +lat_0=52 +lon_0=10 +ellps=GRS80 +units=m +no_defs"
 eck4_proj<-"+proj=eck4 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 crs(bio1)<-longlat_proj
 bio1_eck4<-projectRaster(bio1, crs=eck4_proj, res=c(10000, 10000))
 plot(bio1_eck4)
 bio1_aeqd<-projectRaster(bio1, crs=aeqd_proj, res=c(10000, 10000))
 plot(bio1_aeqd)
+aeqd_proj_gcb<-"+proj=laea +lat_0=90 +lon_0=0 +ellps=GRS80 +units=m +no_defs"
+
 bio1_gcb<-projectRaster(bio1, crs=aeqd_proj_gcb, res=c(10000, 10000))
 plot(bio1_gcb)
 
+aeqd_proj_gcb<-"+proj=laea +lat_0=-90 +lon_0=0 +ellps=GRS80 +units=m +no_defs"
+
+bio1_gcb<-projectRaster(bio1, crs=aeqd_proj_gcb, res=c(10000, 10000))
+plot(bio1_gcb)
+
+lat_beijing<-39.916668
+lon_beijing<-116.383331
+p<-data.frame(x=lon_beijing, y=lat_beijing)
+raster::extract(bio1, p)
+raster::extract(bio1_gcb, p)
+plot(bio1)
+points(p$x, p$y)
+
+plot(bio1_gcb)
+points(p$x, p$y)
 #Regular icosahedron
 hLow <- hexagrid(3)
 # plot it in 3d
 plot3d(hLow, guides=F)
 
+beijing_points<-st_as_sf(p, coords=c("x", "y"), 
+                         crs=st_crs(longlat_proj))
+plot(bio1)
+plot(st_geometry(beijing_points), add=T)
+beijing_points_reprojected<-
+  st_transform(beijing_points, 
+               crs=st_crs(aeqd_proj_gcb))
+
+plot(bio1_gcb)
+plot(st_geometry(beijing_points_reprojected), 
+     add=T, col="red")
+?st_as_sf
 #crop 
 #continents<-readOGR(dsn="../Supp/continents", layer="continent")
 #plot(continents)

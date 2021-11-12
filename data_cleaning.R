@@ -11,13 +11,19 @@ unique_occ <- unique(occ)
 unique_occ$species<-"unique_occ"
 unique_occ<-unique_occ[, c("species", "x", "y")]
 write.csv(unique_occ, "Data/unique_occ.csv", row.names = F)
+
+
 mask<-raster("../Supp/mask.tif")
-occ$mask<-extract(mask, occ[, c("x", "y")])
+occ$mask<-raster::extract(mask, occ[, c("x", "y")])
 points<-data.frame(rasterToPoints(mask))
 occ_unique_cell<-points[which(points$mask %in% unique(occ$mask)),]
 occ_unique_cell$species<-"occ_unique_cell"
 occ_unique_cell<-occ_unique_cell[, c("species", "x", "y")]
 write.csv(occ_unique_cell, "Data/occ_unique_cell.csv", row.names = F)
+
+bg<-as.data.frame(randomPoints(predictors, 1000))
+points(occ_unique_cell$x, occ_unique_cell$y, pch=".", col="red")
+points(bg$x, bg$y, pch=".", col="blue")
 
 #separate the occ into native and invaded area
 continents<-st_read("../Supp/continents/continent.shp")
